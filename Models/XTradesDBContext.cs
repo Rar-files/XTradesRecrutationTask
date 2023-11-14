@@ -15,4 +15,6 @@ public class XTradesDBContext : DbContext
     {
         optionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgresConnection"));
     }
+
+    public DbSet<User> Users { get; set; } = default!;
 }
