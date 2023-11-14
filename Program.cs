@@ -10,8 +10,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add DbContext
 builder.Services.AddDbContext<XTradesDBContext>(options =>
     options.UseInMemoryDatabase("XTradesRecrutationTask"));
+
+// Add AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using XTradesRecrutationTask.Models;
+using XTradesRecrutationTask.Dtos;
+using AutoMapper;
 
 namespace XTradesRecrutationTask.Controllers;
 
@@ -10,10 +12,12 @@ namespace XTradesRecrutationTask.Controllers;
 public class UserController : ControllerBase
 {
     private readonly XTradesDBContext _context;
+    private readonly IMapper _mapper;
 
-    public UserController(XTradesDBContext context)
+    public UserController(XTradesDBContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     // GET: api/User
@@ -28,6 +32,7 @@ public class UserController : ControllerBase
         return await _context.Users.ToListAsync();
     }
 
+    // GET: api/User/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUser(int id)
     {
@@ -44,5 +49,16 @@ public class UserController : ControllerBase
         }
 
         return Ok(user);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<User>> CreateUser(UserDto userDto)
+    {
+        var userToCreate = _mapper.Map<User>(userDto);
+
+        await _context.Users.AddAsync(userToCreate);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetUser), new { id = userToCreate.Id }, userToCreate);
     }
 }
